@@ -45,6 +45,15 @@ uv run fastapi dev src/backend/main.py
 Endpoints: `GET/POST /tasks`, `GET/PATCH/DELETE /tasks/{id}`, `GET /healthz`
 (liveness), `GET /readyz` (readiness, checks DB connectivity).
 
+## Local development
+
+```bash
+docker compose up --build
+```
+
+Starts Postgres + the app, runs migrations automatically on boot, and hot-reloads
+on changes to `src/` (bind-mounted). API at `http://localhost:8000`.
+
 ## Container
 
 ```bash
