@@ -1,0 +1,22 @@
+# Run once per deploy, before rolling the Deployment, so replicas never race
+# each other applying schema changes:
+#   kubectl apply -f k8s/migrate-job.yaml
+#   kubectl wait --for=condition=complete job/backend-migrate -n backend --timeout=120s
+#   kubectl delete job/backend-migrate -n backend
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: backend-migrate
+  namespace: backend
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: backend:local
+          command: ["piccolo", "migrations", "forwards", "all"]
+          envFrom:
+            - secretRef:
+                name: backend-db
